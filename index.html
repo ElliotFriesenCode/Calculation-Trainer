@@ -398,8 +398,9 @@ function loadTree(){
   ctx.canvas.height= window.innerHeight * .8;
 
     for(let r = 0; r < moves.length; r++){
-      let white = true;
+      let white = false;
     for(let c = 0; c < moves[r].length; c++){
+         white = !white;
       if(moves[r][c][0] !== ''){
       let rowId = r;
       let HighestRow = r;
@@ -419,7 +420,7 @@ function loadTree(){
         else{
           div.classList.add('grid-test-white');
         }
-        white = !white;
+       
         div.addEventListener('click', loadFen, false);
         div.curr = moves[r][c][1];
         div.row = moves[r][c][4];
