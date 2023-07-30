@@ -1,0 +1,27 @@
+{
+  "ShowHidden": false,
+  "ShowAllFiles": false,
+  "SaveDisabled": false,
+  "SSoTmeProjectId": "61510c43-7470-45a8-b250-6a637b273b12",
+  "Name": "Calculation-Trainer",
+  "ProjectSettings": [
+    {
+      "ProjectSettingId": "48b441a9-3c15-4bb7-b1ab-2cfda7204eb6",
+      "Name": "project-name",
+      "Value": "Calculation-Trainer"
+    }
+  ],
+  "ProjectTranspilers": [
+    {
+      "MatchedTranspiler": {
+        "TranspilerId": "fddc44e8-1e48-49bb-b9db-56a10d39c6aa",
+        "Name": "PlantTextToPng",
+        "Description": "PlantText to Png"
+      },
+      "ProjectTranspilerId": "789fcbf1-8cf3-4ccc-a7dc-928b5823f626",
+      "Name": "PlantTextToPng",
+      "RelativePath": "/ej/python",
+      "CommandLine": "planttext-to-png -i .\\extractPuzzle.uml"
+    }
+  ]
+}

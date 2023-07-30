@@ -1,0 +1,385 @@
+{
+  "project": {
+    "name": "Chess Trainer",
+    "description": "The Advanced Chess Tactics Trainer project is a breakthrough innovation in chess training software, providing an enriched, customizable, and comprehensive learning experience for both beginners and seasoned players. Rooted in the philosophy that real-world chess scenarios do not always follow a single, winning path, the trainer emulates this complexity by presenting multi-path puzzles that demand in-depth analysis, strategy, and calculated risks. Coupled with an intelligent scoring system, interactive feedback, and customizable settings, this trainer delivers a tailored learning journey for each user. Harnessing powerful resources like the Lichess database, interactive chessboards, and chess algorithms, our project aims to redefine the way chess training is conducted and pave the way for a new generation of chess masters.",
+    "notes": [
+      "There are two dimensions for each puzzle: depth and max # of branches",
+      "Are arbitrary long inputs evaluated in their entirety? Or just to specific depth? (I think entirety. Why not?)",
+      "To add another line, click on any white move and add another variation",
+      "No need to submit individual lines, just  keep adding and submit them all at once",
+      "Find an example of a relatively simple puzzle, but black has an awesome, unexpected resource.",
+      "Find an example of a puzzle that seems simple but has no winning moves. Maybe a false Greek Gift?",
+      "Puzzles can be categorized: imbalance, tactical, positional advantage, defense, no best line",
+      "Make arrow for previous move"
+    ],
+    "sellingPoints": [
+      "People hate getting four moves right and last move wrong and get no points.",
+      "Typical tactic trainers only require one line.",
+      "Typical tactic trainers may give response that you did not calculate.",
+      "Typical tactic trainers only result in wins. Not all real positions have wins. There are tempting fun moves that don't work that we should be tested on.",
+      "Can ignore stupid computer moves"
+    ],
+    "features": {
+      "PartialCredit": "Good, but what if black plays.....",
+      "VisuallyPlaysEachLine": true,
+      "Splintering": true,
+      "Timer": true,
+      "TeacherAccount": true,
+      "EditLine": true,
+      "NoWinningMoveButton": true,
+      "PointOutLine": true,
+      "ExtraCreditLongLine": true,
+      "BeginnerMode": true
+    },
+    "settings": {
+      "Depth": true,
+      "IncludePuzzlesWithNoSolution": true,
+      "InputMethod": [
+        "move pieces",
+        "click/drag without pieces moving",
+        "typing moves"
+      ],
+      "ListViewVsTreeView": true,
+      "TimerLength": true
+    },
+    "puzzleTraining": {
+      "stateMachine": {
+        "name": "Puzzle Extraction",
+        "description": "This state machine represents the algorithm for extracting instructive puzzles from raw chess games. It uses the Stockfish engine to identify key game positions and generate potential paths forward, enriching user training with varied and complex real-world scenarios.",
+        "states": [
+          {
+            "name": "Start",
+            "description": "Read the PGN game",
+            "nextState": "Puzzle Position Identification"
+          },
+          {
+            "name": "Puzzle Position Identification",
+            "description": "Find the most instructive positions in the game to convert into puzzles.",
+            "subStates": [
+              {
+                "name": "Move Evaluation",
+                "description": "Evaluate each move of the game for its instructional potential."
+              },
+              {
+                "name": "Critical Position Detection",
+                "description": "Detect positions with significant changes as potential puzzle points."
+              },
+              {
+                "name": "Position Scoring",
+                "description": "Score each potential puzzle point for complexity and learning value."
+              },
+              {
+                "name": "Position Selection",
+                "description": "Select the highest-scoring positions for puzzle creation."
+              }
+            ],
+            "nextState": "Path Generation"
+          },
+          {
+            "name": "Path Generation",
+            "description": "For each identified puzzle position, generate multiple potential paths forward.",
+            "subStates": [
+              {
+                "name": "Possible Moves Calculation",
+                "description": "Calculate all possible legal moves for the puzzle position."
+              },
+              {
+                "name": "Scenario Generation",
+                "description": "Simulate resulting scenarios for each possible move."
+              },
+              {
+                "name": "Scenario Evaluation and Scoring",
+                "description": "Evaluate and score each scenario based on resulting board position and tactical potential."
+              },
+              {
+                "name": "Best Scenario Selection",
+                "description": "Select top-scoring scenarios as the possible paths for the puzzle."
+              }
+            ],
+            "nextState": "Continue extracting puzzles or end"
+          },
+          {
+            "name": "Continue extracting puzzles or end",
+            "description": "The algorithm decides whether to continue extracting more puzzles from the game or end the process based on predefined criteria.",
+            "nextState": ""
+          }
+        ]
+      }
+    },
+    "schema": {
+      "tables": [
+        {
+          "name": "games",
+          "columns": [
+            {
+              "name": "id",
+              "type": "integer",
+              "primaryKey": true
+            },
+            {
+              "name": "white",
+              "type": "string"
+            },
+            {
+              "name": "black",
+              "type": "string"
+            },
+            {
+              "name": "result",
+              "type": "string"
+            },
+            {
+              "name": "utc_date",
+              "type": "string"
+            },
+            {
+              "name": "utc_time",
+              "type": "string"
+            },
+            {
+              "name": "white_elo",
+              "type": "integer"
+            },
+            {
+              "name": "black_elo",
+              "type": "integer"
+            },
+            {
+              "name": "white_rd",
+              "type": "integer"
+            },
+            {
+              "name": "black_rd",
+              "type": "integer"
+            },
+            {
+              "name": "white_is_comp",
+              "type": "boolean"
+            },
+            {
+              "name": "black_is_comp",
+              "type": "boolean"
+            },
+            {
+              "name": "time_control",
+              "type": "string"
+            },
+            {
+              "name": "eco",
+              "type": "string"
+            },
+            {
+              "name": "termination",
+              "type": "string"
+            },
+            {
+              "name": "annotator",
+              "type": "string"
+            },
+            {
+              "name": "modes",
+              "type": "string"
+            },
+            {
+              "name": "game_type",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "puzzles",
+          "columns": [
+            {
+              "name": "puzzle_id",
+              "type": "integer",
+              "primaryKey": true
+            },
+            {
+              "name": "source_game_id",
+              "type": "integer",
+              "foreignKey": "games.id"
+            },
+            {
+              "name": "initial_fen",
+              "type": "string"
+            },
+            {
+              "name": "difficulty",
+              "type": "string"
+            },
+            {
+              "name": "theme",
+              "type": "string"
+            },
+            {
+              "name": "teacher_notes",
+              "type": "string"
+            },
+            {
+              "name": "has_solution",
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "name": "moves",
+          "columns": [
+            {
+              "name": "move_id",
+              "type": "integer",
+              "primaryKey": true
+            },
+            {
+              "name": "game_id",
+              "type": "integer",
+              "foreignKey": "games.id"
+            },
+            {
+              "name": "puzzle_id",
+              "type": "integer",
+              "foreignKey": "puzzles.puzzle_id"
+            },
+            {
+              "name": "move_number",
+              "type": "integer"
+            },
+            {
+              "name": "move",
+              "type": "string"
+            },
+            {
+              "name": "fen",
+              "type": "string"
+            },
+            {
+              "name": "is_correct_path",
+              "type": "boolean"
+            },
+            {
+              "name": "parent_move_id",
+              "type": "integer",
+              "foreignKey": "moves.move_id"
+            }
+          ]
+        },
+        {
+          "name": "alternate_moves",
+          "columns": [
+            {
+              "name": "alternate_move_id",
+              "type": "integer",
+              "primaryKey": true
+            },
+            {
+              "name": "move_id",
+              "type": "integer",
+              "foreignKey": "moves.move_id"
+            },
+            {
+              "name": "move",
+              "type": "string"
+            },
+            {
+              "name": "fen",
+              "type": "string"
+            },
+            {
+              "name": "is_correct_path",
+              "type": "boolean"
+            }
+          ]
+        }
+      ]
+    },
+    "tools": [
+      {
+        "name": "Chess.js Library",
+        "link": "https://github.com/jhlywa/chess.js",
+        "usage": [
+          "Move legality checking",
+          "Path finding",
+          "Foundation for the trainer platform"
+        ],
+        "reasons": [
+          "Enables checking the legality of moves in the chess game",
+          "Facilitates path finding and generating possible move sequences",
+          "Forms the foundation for developing the chess training platform"
+        ]
+      },
+      {
+        "name": "Stockfish Engine",
+        "link": "https://pypi.org/project/stockfish/",
+        "usage": [
+          "Determining best next moves",
+          "Assessing skill level/evaluation",
+          "Path finding",
+          "Move legality checking",
+          "Puzzle extraction from Lichess source games"
+        ],
+        "reasons": [
+          "Provides the ability to calculate and suggest the best next moves in a given position",
+          "Evaluates player skill levels and provides game evaluations",
+          "Assists in finding paths or move sequences based on specific criteria",
+          "Checks the legality of moves made by players",
+          "Extracts instructive puzzles from source games obtained from Lichess"
+        ]
+      },
+      {
+        "name": "Lichess Database",
+        "link": "https://database.lichess.org/#puzzles",
+        "usage": [
+          "Puzzle sources",
+          "Game sources"
+        ],
+        "reasons": [
+          "Provides a valuable source of puzzles for training purposes",
+          "Serves as a database of chess games, which can be used as sources for puzzle extraction"
+        ],
+        "missing_behaviors": [
+          "Extracting puzzles from games",
+          "Suggesting good solutions"
+        ]
+      },
+      {
+        "name": "Interactive Chessboard",
+        "link": "https://www.apronus.com/chess/pgnviewer/",
+        "usage": [
+          "Visualizing chess positions"
+        ],
+        "reasons": [
+          "Enables the visualization of chess positions and moves for improved user experience",
+          "Helps users understand and analyze chess positions more effectively"
+        ]
+      },
+      {
+        "name": "PGN Protocol",
+        "usage": [
+          "Storing chess games"
+        ],
+        "reasons": [
+          "Provides a standardized format for storing and sharing chess games"
+        ]
+      },
+      {
+        "name": "FEN Protocol",
+        "usage": [
+          "Describing chess positions"
+        ],
+        "reasons": [
+          "Enables the representation and communication of specific chess positions"
+        ]
+      }
+    ],
+    "chessPuzzleTypes": [
+      "imbalance",
+      "tactical",
+      "positional advantage",
+      "defense",
+      "no best line"
+    ],
+    "userTypes": [
+      "students",
+      "teachers"
+    ]
+  }
+}

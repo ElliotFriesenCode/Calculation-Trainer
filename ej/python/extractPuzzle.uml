@@ -1,0 +1,34 @@
+@startuml
+title Puzzle Extraction State Machine
+
+state Start {
+  [*] --> ReadThePGNGame
+}
+state PuzzlePositionIdentification {
+  state MoveEvaluation
+  state CriticalPositionDetection
+  state PositionScoring
+  state PositionSelection
+  
+  MoveEvaluation --> CriticalPositionDetection : Move Evaluated
+  CriticalPositionDetection --> PositionScoring : Critical Position Detected
+  PositionScoring --> PositionSelection : Position Scored
+}
+state PathGeneration {
+  state PossibleMovesCalculation
+  state ScenarioGeneration
+  state ScenarioEvaluationAndScoring
+  state BestScenarioSelection
+  
+  PossibleMovesCalculation --> ScenarioGeneration : Moves Calculated
+  ScenarioGeneration --> ScenarioEvaluationAndScoring : Scenarios Generated
+  ScenarioEvaluationAndScoring --> BestScenarioSelection : Scenarios Evaluated and Scored
+}
+state ContinueExtractingPuzzlesOrEnd {
+  [*] --> ContinueOrEnd
+}
+
+Start --> PuzzlePositionIdentification : ReadThePGNGame
+PuzzlePositionIdentification --> PathGeneration : Position Selected
+PathGeneration --> ContinueExtractingPuzzlesOrEnd : Scenarios Selected
+@enduml

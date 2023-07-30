@@ -1,0 +1,8 @@
+/**/obj/**/*
+/**/bin/**/*
+/.ssotme/**/*
+/DSPXml/**/*
+/SSoT/__patch.json
+/AICapture/Backup/*.zip
+/ej/data/*.pgn.csv
+/ej/data/*.pgn.zst

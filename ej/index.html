@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Board</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <table id="chessboard" ondragover="event.preventDefault()" ondrop="drop(event)"></table>
+
+    <button onclick="undo()">Undo</button>
+    
+    <script type="module">
+        import { ctchess } from './js/ct-chess.js'
+        import { uiHelpers } from './js/ui-helpers.js';
+
+        const chessboardTable = document.getElementById('chessboard');
+        let draggedPiece;
+
+        window.renderBoard = () => {
+            const chessboardTable = document.getElementById('chessboard');
+            uiHelpers.renderBoard(ctchess, chessboardTable);
+        }
+
+        window.drop = (event) => {
+            event.preventDefault();
+            const sourceSquare = event.dataTransfer.getData('text/plain');
+            const targetSquare = event.target.id;
+            console.error('drop', event, sourceSquare, targetSquare);   
+
+            const moveResult = ctchess.move({ from: sourceSquare, to: targetSquare });            
+
+            if (moveResult) {
+                uiHelpers.renderBoard(ctchess, chessboardTable);
+            } else {
+                draggedPiece.style.opacity = '1';
+            }
+        };
+
+        window.undo = () => {
+            ctchess.undo();
+            uiHelpers.renderBoard(ctchess, chessboardTable);
+        };
+
+        uiHelpers.renderBoard(ctchess, chessboardTable);
+    </script>
+</body>
+</html>

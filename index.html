@@ -27,7 +27,9 @@ Main chessboard/move code
 
 
 */
-    import { move, getPiece, chess } from './src/index.js'
+    //import { move, getPiece, chess } from './src/index.js'
+    import { move, getPiece, ctchess as chess } from './ej/js/ct-chess.js'
+
     let fens = [];
     let positions = [];
     generateGrid();
@@ -479,6 +481,7 @@ if(c>0){
   }
   //Delete all pieces
 function clearPieces(){
+  chess.setCurrent(currRow, currColumn);
   for(let i = 0; i < 64; i++){
     if( document.getElementById("i" + i)){
     document.getElementById("i" + i).remove();
