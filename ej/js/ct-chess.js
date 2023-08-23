@@ -16,6 +16,10 @@ class CTChess extends Chess {
     return result;
   }
 
+  importPGN(pgn) {
+    // do something here to process the pgn into this structuredClone.
+  }
+
   undo() {
     if (!this.currentMove) return false;
 
